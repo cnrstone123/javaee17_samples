@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>biz-comp-info</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<link href="http://cdn.bootcss.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+	<script type="text/javascript" src="./jquery-3.3.1.min.js"></script>
+	<style>
+		body {font-family: Consolas 11px;}
+		input.ng-invalid {background-color: #ffffcc; /* light-orange */}
+		hr.double {border-top: 3px double #8c8b8b;}
+		hr.dash {background-color: #fff;border-top: 2px dashed #8c8b8b;}
+	</style>
+</head>
+
+<body ng-app="app00"><br/>
+	<div ng-app="app00" ng-controller="SelectCtrler">
+		<div class="form-group">
+			<div class="col-sm-offset-4 col-sm-8">
+				<input type="text" class="form-control" ng-model="compName" placeholder="公司名称(네이버주식회사)" value="" />
+				<input type="text" class="form-control" ng-model="compRegNo" placeholder="公司注册号(333-22-5....:6-digit)" value="" maxlength="10" />
+			</div>
+			<div class="col-sm-offset-4 col-sm-8">
+				<label for="dbfile" class="col-sm-8 control-label">加载数据库(sqlite3/db/organ.db):</label>
+				<input type="file" id="dbfile" class="btn btn-primary btn-block" />
+			</div>
+			<div class="col-sm-offset-4 col-sm-8" ng-controller="SelectCtrler">
+				<label for="cdSIDO" class="col-sm-8 control-label">公司住所</label>
+				<select id="cdSIDO" ng-model="cdSIDO" class="form-control"
+				ng-options="row as row.ming for row in LstSIDO" ng-change="changedSIDO()" required></select>
+				<select id="cdSGG"  ng-model="cdSGG" class="form-control"
+				ng-options="row as row.ming for row in LstSGG" ng-change="changedSGG()" required></select>
+				<select id="cdLawUMD" ng-model="cdLawUMD" class="form-control" ng-options="row as row.ming for row in LstLawUMD" class="form-control"></select>
+				<select id="cdGovUMD" ng-model="cdGovUMD" class="form-control" ng-options="row as row.ming for row in LstGovUMD" class="form-control"></select>
+				<br/>
+				<button id="btnSearch1" ng-click="oper1()" type="button" class="btn btn-primary btn-block">搜索(op1)</button>
+				<br/>
+				<input type="text" class="form-control" ng-model="compRegNo" placeholder="公司注册号(333-22-5....:6-digit)" value="" maxlength="10" />
+				<button id="btnSearch2" ng-click="oper2()" type="button" class="btn btn-primary btn-block">搜索(op2)</button>
+			</div>
+		</div>
+		<!-- end of form-group -->
+	</div>
+	<!-- end of ng-app00 -->
+	<hr class="dash col-sm-offset-4 col-sm-8" />
+	<div class="col-sm-offset-4 col-sm-8">
+		<div id="error" class="error output"></div>
+		<pre id="output" class="output">
+			result will be displayed here.
+			about AngularJS and scope.$apply, read more...
+			<a href="http://jimhoskins.com/2012/12/17/angularjs-and-apply.html">http://jimhoskins.com/2012/12/17/angularjs-and-apply.html</a>
+			about Nested Scopes in AngularJS
+			<a href="http://jimhoskins.com/2012/12/14/nested-scopes-in-angularjs.html">http://jimhoskins.com/2012/12/14/nested-scopes-in-angularjs.html</a>
+		</pre>
+	</div>
+	<hr class="dash col-sm-offset-4 col-sm-8" />
+	<script src="compinfo.js" type="text/javascript"></script>
+	<script src="data.gui.js" type="text/javascript"></script>
+</body>
+
+</html>
