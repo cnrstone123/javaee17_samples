@@ -1,11 +1,9 @@
 package com.humble.gongxi.test;
 
-import android.content.res.AssetManager;
-import android.text.TextUtils;
-import android.util.Log;
- 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,16 +13,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 
-//import java.io.BufferedReader;
-//import java.io.ByteArrayOutputStream;
-//import java.io.FileNotFoundException;
-//import java.io.IOException;
-//import java.io.InputStream;
-//import java.io.InputStreamReader;
-//import java.io.PrintStream;
-//import java.net.ServerSocket;
-//import java.net.Socket;
-//import java.net.SocketException;
+import com.humble.gongxi.PubLogger;
+
+//import android.text.TextUtils;
+//import android.util.Log;
 
 /**
  * Implementation of a very basic HTTP server. The contents are loaded from the
@@ -33,8 +25,9 @@ import java.net.SocketException;
  */
 public class SimpleWebServerTest implements Runnable {
 
-	private static final String TAG = "SimpleWebServer";
-
+	private static final String TAG = "SimpleWebServerTest";
+	private sattic final String SERV_LOC = "";
+	
 	/**
 	 * The port number we listen to
 	 */
@@ -44,7 +37,7 @@ public class SimpleWebServerTest implements Runnable {
 	/**
 	 * {@link android.content.res.AssetManager} for loading files to serve.
 	 */
-	private AssetManager mAssets;
+//	private AssetManager mAssets;
 //	private final AssetManager mAssets;
 
 	/**
@@ -60,9 +53,10 @@ public class SimpleWebServerTest implements Runnable {
 	/**
 	 * WebServer constructor.
 	 */
-	public SimpleWebServerTest(int port, AssetManager assets) {
+	public SimpleWebServerTest(int port) {
+//	public SimpleWebServerTest(int port, AssetManager assets) {
 		this.mPort = port;
-		this.mAssets = assets;
+//		this.mAssets = assets;
 	}
 
 	/**
@@ -84,7 +78,7 @@ public class SimpleWebServerTest implements Runnable {
 				mServerSocket = null;
 			}
 		} catch (IOException e) {
-			Log.e(TAG, "Error closing the server socket.", e);
+			PubLogger.error(TAG + ", Error closing the server socket. ex =%s", e);
 		}
 	}
 
@@ -104,7 +98,7 @@ public class SimpleWebServerTest implements Runnable {
 		} catch (SocketException e) {
 			// The server was stopped; ignore.
 		} catch (IOException e) {
-			Log.e(TAG, "Web server error.", e);
+			PubLogger.error(TAG + ", Web server error.", e);
 		}
 	}
 
@@ -124,7 +118,8 @@ public class SimpleWebServerTest implements Runnable {
 			// Read HTTP headers and parse out the route.
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			String line;
-			while (!TextUtils.isEmpty(line = reader.readLine())) {
+			while (!SimpleWebServerTest.isEmpty(line = reader.readLine())) {
+				PubLogger.info("//-- %s", line);
 				if (line.startsWith("GET /")) {
 					int start = line.indexOf('/') + 1;
 					int end = line.indexOf(' ', start);
@@ -141,7 +136,8 @@ public class SimpleWebServerTest implements Runnable {
 				writeServerError(output);
 				return;
 			}
-			byte[] bytes = loadContent(route);
+//			byte[] bytes = loadContent(route);
+			byte[] bytes = loadContent(SERV_LOC + route);
 			if (null == bytes) {
 				writeServerError(output);
 				return;
@@ -171,7 +167,7 @@ public class SimpleWebServerTest implements Runnable {
 	 *            The output stream.
 	 */
 	private void writeServerError(PrintStream output) {
-		output.println("HTTP/1.0 500 Internal Server Error");
+		output.println("HTTP/1.0 500 Internal Server Error. ERON-ZZNG.!!");
 		output.flush();
 	}
 
@@ -187,7 +183,8 @@ public class SimpleWebServerTest implements Runnable {
 		InputStream input = null;
 		try {
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
-			input = mAssets.open(fileName);
+//			input = mAssets.open(fileName);
+			input = new FileInputStream(new File(fileName));
 			byte[] buffer = new byte[1024];
 			int size;
 			while (-1 != (size = input.read(buffer))) {
@@ -196,6 +193,8 @@ public class SimpleWebServerTest implements Runnable {
 			output.flush();
 			return output.toByteArray();
 		} catch (FileNotFoundException e) {
+			PubLogger.error("//-- WebServer.loadContent(..).fileName =[%s]", fileName);
+			PubLogger.error("//-- NotFoundEx.Msg =[%s]", e.getMessage());
 			return null;
 		} finally {
 			if (null != input) {
@@ -212,7 +211,7 @@ public class SimpleWebServerTest implements Runnable {
 	 * @return A MIME type.
 	 */
 	private String detectMimeType(String fileName) {
-		if (TextUtils.isEmpty(fileName)) {
+		if (SimpleWebServerTest.isEmpty(fileName)) {
 			return null;
 		} else if (fileName.endsWith(".html")) {
 			return "text/html";
@@ -224,5 +223,19 @@ public class SimpleWebServerTest implements Runnable {
 			return "application/octet-stream";
 		}
 	}
-
+    /**
+     * Returns true if the string is null or 0-length.
+     * @param str the string to be examined
+     * @return true if str is null or zero length
+     */
+    public static boolean isEmpty(CharSequence str) {
+        if (str == null || str.length() == 0)
+            return true;
+        else
+            return false;
+    }
+    
+	public static void main(String...args){
+		new SimpleWebServerTest(8082).start();
+	}
 }
