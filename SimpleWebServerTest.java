@@ -25,20 +25,20 @@ import com.humble.gongxi.PubLogger;
  */
 public class SimpleWebServerTest implements Runnable {
 
-	private static final String TAG = "SimpleWebServerTest";
-	private sattic final String SERV_LOC = "";
-	
+	private static final String TAG = "SimpleWebServer";
+	private static final String SERV_LOC = "";
+
 	/**
 	 * The port number we listen to
 	 */
 	private int mPort;
-//	private final int mPort;
+	// private final int mPort;
 
 	/**
 	 * {@link android.content.res.AssetManager} for loading files to serve.
 	 */
-//	private AssetManager mAssets;
-//	private final AssetManager mAssets;
+	// private AssetManager mAssets;
+	// private final AssetManager mAssets;
 
 	/**
 	 * True if the server is running.
@@ -54,9 +54,9 @@ public class SimpleWebServerTest implements Runnable {
 	 * WebServer constructor.
 	 */
 	public SimpleWebServerTest(int port) {
-//	public SimpleWebServerTest(int port, AssetManager assets) {
+		// public SimpleWebServerTest(int port, AssetManager assets) {
 		this.mPort = port;
-//		this.mAssets = assets;
+		// this.mAssets = assets;
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class SimpleWebServerTest implements Runnable {
 				writeServerError(output);
 				return;
 			}
-//			byte[] bytes = loadContent(route);
+			// byte[] bytes = loadContent(route);
 			byte[] bytes = loadContent(SERV_LOC + route);
 			if (null == bytes) {
 				writeServerError(output);
@@ -183,7 +183,7 @@ public class SimpleWebServerTest implements Runnable {
 		InputStream input = null;
 		try {
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
-//			input = mAssets.open(fileName);
+			// input = mAssets.open(fileName);
 			input = new FileInputStream(new File(fileName));
 			byte[] buffer = new byte[1024];
 			int size;
@@ -223,19 +223,22 @@ public class SimpleWebServerTest implements Runnable {
 			return "application/octet-stream";
 		}
 	}
-    /**
-     * Returns true if the string is null or 0-length.
-     * @param str the string to be examined
-     * @return true if str is null or zero length
-     */
-    public static boolean isEmpty(CharSequence str) {
-        if (str == null || str.length() == 0)
-            return true;
-        else
-            return false;
-    }
-    
-	public static void main(String...args){
+
+	/**
+	 * Returns true if the string is null or 0-length.
+	 * 
+	 * @param str
+	 *            the string to be examined
+	 * @return true if str is null or zero length
+	 */
+	public static boolean isEmpty(CharSequence str) {
+		if (str == null || str.length() == 0)
+			return true;
+		else
+			return false;
+	}
+
+	public static void main(String... args) {
 		new SimpleWebServerTest(8082).start();
 	}
 }
